@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: user-support-postgres
+    volumes:
+      - "./docker/scripts/postgresql:/docker-entrypoint-initdb.d"
+      - "./docker/volumes/postgresql:/var/lib/postgresql/data"
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: usersupport_command,usersupport_query
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: a123456
+    healthcheck:
+      test: [ "CMD", "psql -h localhost -p 5432 -U $$POSTGRES_USER " ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: user-support-rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+

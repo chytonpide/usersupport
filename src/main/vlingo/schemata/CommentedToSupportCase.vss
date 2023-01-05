@@ -1,0 +1,6 @@
+event CommentedToSupportCase {
+  version semanticVersion
+  string id
+  data.Author:1.0.0 commenter
+  string body
+}

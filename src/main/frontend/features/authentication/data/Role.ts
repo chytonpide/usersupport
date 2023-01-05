@@ -1,0 +1,4 @@
+export enum Role {
+  SUPPORTER="SUPPORTER",
+  CUSTOMER= "CUSTOMER"
+}

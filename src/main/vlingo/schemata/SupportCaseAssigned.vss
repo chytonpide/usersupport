@@ -1,0 +1,5 @@
+event SupportCaseAssigned {
+  version semanticVersion
+  string id
+  data.Assignee:1.0.0 supporter
+}

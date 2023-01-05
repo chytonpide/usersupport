@@ -1,0 +1,1 @@
+export const NETWORK_ERROR_MESSAGE = "Failed to communicate with the server."

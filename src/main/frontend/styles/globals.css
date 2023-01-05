@@ -1,0 +1,26 @@
+.cursor-pointer {
+    cursor:pointer;
+}
+
+label {
+    font-size: 0.9rem !important;
+    color: #cccccc ;
+}
+
+.disabled-input {
+    color: #eeeeee;
+    background: #37373d !important;
+    border-color: #37373d !important;
+}
+
+.fs-7 {
+    font-size:0.9em;
+}
+
+.fs-8 {
+    font-size:0.8em;
+}
+
+pre {
+    margin: 0px;
+}

@@ -1,0 +1,5 @@
+event CommentBodyChanged {
+  version semanticVersion
+  string id
+  string body
+}

@@ -1,0 +1,379 @@
+{
+  "context": {
+    "groupId": "com.nconnect",
+    "artifactId": "usersupport",
+    "artifactVersion": "1.0.0",
+    "packageName": "com.nconnect.usersupport"
+  },
+  "model": {
+    "persistenceSettings": {
+      "storageType": "JOURNAL",
+      "useCQRS": true,
+      "projections": "EVENT_BASED",
+      "database": "MYSQL",
+      "commandModelDatabase": "POSTGRES",
+      "queryModelDatabase": "POSTGRES"
+    },
+    "aggregateSettings": [
+      {
+        "api": {
+          "rootPath": "/support-cases",
+          "routes": [
+            {
+              "path": "*",
+              "httpMethod": "POST",
+              "aggregateMethod": "open",
+              "requireEntityLoad": false
+            },
+            {
+              "path": "{supportCaseId}/close",
+              "httpMethod": "PUT",
+              "aggregateMethod": "close",
+              "requireEntityLoad": true
+            },
+            {
+              "path": "{supportCaseId}/assignee",
+              "httpMethod": "PATCH",
+              "aggregateMethod": "assign",
+              "requireEntityLoad": true
+            },
+            {
+              "path": "{supportCaseId}/content",
+              "httpMethod": "PATCH",
+              "aggregateMethod": "changeContent",
+              "requireEntityLoad": true
+            }
+          ]
+        },
+        "aggregateName": "SupportCase",
+        "stateFields": [
+          {
+            "name": "id",
+            "type": "String"
+          },
+          {
+            "name": "user",
+            "type": "User",
+            "collectionType": ""
+          },
+          {
+            "name": "categoryId",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "subject",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "description",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "status",
+            "type": "int",
+            "collectionType": ""
+          },
+          {
+            "name": "assignee",
+            "type": "Assignee",
+            "collectionType": ""
+          }
+        ],
+        "methods": [
+          {
+            "name": "open",
+            "parameters": [
+              {
+                "stateField": "id",
+                "parameterName": "id",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "user",
+                "parameterName": "user",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "categoryId",
+                "parameterName": "categoryId",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "subject",
+                "parameterName": "subject",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "description",
+                "parameterName": "description",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": true,
+            "event": "SupportCaseOpened"
+          },
+          {
+            "name": "close",
+            "parameters": [
+              {
+                "stateField": "id",
+                "parameterName": "id",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": false,
+            "event": "SupportCaseClosed"
+          },
+          {
+            "name": "assign",
+            "parameters": [
+              {
+                "stateField": "id",
+                "parameterName": "id",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "assignee",
+                "parameterName": "assignee",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": false,
+            "event": "SupportCaseAssigned"
+          },
+          {
+            "name": "userComment",
+            "parameters": [],
+            "useFactory": false
+          },
+          {
+            "name": "asigineeComment",
+            "parameters": [],
+            "useFactory": false
+          },
+          {
+            "name": "changeContent",
+            "parameters": [
+              {
+                "stateField": "categoryId",
+                "parameterName": "categoryId",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "subject",
+                "parameterName": "subject",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "description",
+                "parameterName": "description",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": false
+          }
+        ],
+        "events": [
+          {
+            "name": "SupportCaseOpened",
+            "fields": [
+              "id"
+            ]
+          },
+          {
+            "name": "SupportCaseClosed",
+            "fields": [
+              "id"
+            ]
+          },
+          {
+            "name": "SupportCaseAssigned",
+            "fields": [
+              "id",
+              "assignee"
+            ]
+          }
+        ],
+        "consumerExchange": {
+          "receivers": []
+        },
+        "producerExchange": {
+          "schemaGroup": "nconnect:usersupport:com.nconnect.usersupport",
+          "outgoingEvents": [
+            "SupportCaseAssigned",
+            "SupportCaseClosed",
+            "SupportCaseOpened"
+          ]
+        }
+      },
+      {
+        "api": {
+          "rootPath": "/comments",
+          "routes": [
+            {
+              "path": "*",
+              "httpMethod": "POST",
+              "aggregateMethod": "create",
+              "requireEntityLoad": false
+            },
+            {
+              "path": "{commentId}/body",
+              "httpMethod": "PATCH",
+              "aggregateMethod": "changeBody",
+              "requireEntityLoad": true
+            }
+          ]
+        },
+        "aggregateName": "Comment",
+        "stateFields": [
+          {
+            "name": "id",
+            "type": "String"
+          },
+          {
+            "name": "author",
+            "type": "Author"
+          },
+          {
+            "name": "body",
+            "type": "String",
+            "collectionType": ""
+          }
+        ],
+        "methods": [
+          {
+            "name": "create",
+            "parameters": [
+              {
+                "stateField": "id",
+                "parameterName": "id",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "author",
+                "parameterName": "author",
+                "multiplicity": ""
+              },
+              {
+                "stateField": "body",
+                "parameterName": "body",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": true,
+            "event": "CommentedToSupportCase"
+          },
+          {
+            "name": "changeBody",
+            "parameters": [
+              {
+                "stateField": "body",
+                "parameterName": "body",
+                "multiplicity": ""
+              }
+            ],
+            "useFactory": false,
+            "event": "CommentBodyChanged"
+          }
+        ],
+        "events": [
+          {
+            "name": "CommentedToSupportCase",
+            "fields": [
+              "id",
+              "author",
+              "body"
+            ]
+          },
+          {
+            "name": "CommentBodyChanged",
+            "fields": [
+              "id",
+              "body"
+            ]
+          }
+        ],
+        "consumerExchange": {
+          "receivers": []
+        },
+        "producerExchange": {
+          "schemaGroup": "nconnect:usersupport:com.nconnect.usersupport",
+          "outgoingEvents": [
+            "CommentBodyChanged",
+            "CommentedToSupportCase"
+          ]
+        }
+      }
+    ],
+    "valueObjectSettings": [
+      {
+        "name": "Assignee",
+        "fields": [
+          {
+            "name": "identity",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "collectionType": ""
+          }
+        ]
+      },
+      {
+        "name": "User",
+        "fields": [
+          {
+            "name": "identity",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "collectionType": ""
+          }
+        ]
+      },
+      {
+        "name": "Author",
+        "fields": [
+          {
+            "name": "identity",
+            "type": "String",
+            "collectionType": ""
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "collectionType": ""
+          }
+        ]
+      }
+    ]
+  },
+  "deployment": {
+    "type": "DOCKER",
+    "dockerImage": "user-support",
+    "kubernetesImage": "",
+    "kubernetesPod": "",
+    "clusterTotalNodes": 3,
+    "clusterPort": 50011,
+    "producerExchangePort": 19762,
+    "httpServerPort": 8081,
+    "pullSchemas": false
+  },
+  "schemata": {
+    "host": "localhost",
+    "port": 9020
+  },
+  "projectDirectory": "/designer/VLINGO-XOOM/com.nconnect/usersupport1",
+  "useAnnotations": true,
+  "useAutoDispatch": true,
+  "generateUIWith": "ReactJS",
+  "generateUI": true
+}

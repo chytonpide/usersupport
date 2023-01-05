@@ -1,0 +1,4 @@
+event SupportCaseOpened {
+  version semanticVersion
+  string id
+}

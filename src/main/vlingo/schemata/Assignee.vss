@@ -1,0 +1,5 @@
+data Assignee {
+  version semanticVersion
+  string identity
+  string name
+}
